@@ -1,8 +1,12 @@
 package g2fa
 
 import (
+	"bytes"
+	"crypto/hmac"
 	"crypto/rand"
+	"crypto/sha1"
 	"encoding/base32"
+	"encoding/binary"
 	"io"
 	"strings"
 )
@@ -43,4 +47,15 @@ func decodeHMAC(hash []byte) int32 {
 	binCode += (int32(hash[offset+1]) << 16)
 	binCode += (int32(hash[offset]&0x7f) << 24)
 	return binCode % 1000000
+}
+
+func generateHMAC(key []byte, variable int64) ([]byte, error) {
+	list := bytes.Buffer{}
+	err := binary.Write(&list, binary.BigEndian, variable)
+	if err != nil {
+		return nil, err
+	}
+	macProducer := hmac.New(sha1.New, key)
+	macProducer.Write(list.Bytes())
+	return macProducer.Sum(nil), nil
 }
