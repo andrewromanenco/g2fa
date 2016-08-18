@@ -5,7 +5,11 @@ import (
 	"io"
 )
 
-// GenerateKey generates random crypto key of requested length in bytes
+const (
+    // GoogleAuthenticator is a key size compatible with Goole's authenticator app.
+    GoogleAuthenticator = 10
+)
+// GenerateKey generates random crypto key of requested length in bytes.
 func GenerateKey(size int) ([]byte, error) {
 	key := make([]byte, size)
 	if _, err := io.ReadFull(rand.Reader, key); err != nil {
