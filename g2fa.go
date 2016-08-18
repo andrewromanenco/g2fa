@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"encoding/base32"
 	"io"
+	"strings"
 )
 
 const (
@@ -23,4 +24,9 @@ func GenerateKey(size int) ([]byte, error) {
 // EncodeKey converts a binary key to a user friendly base32 string.
 func EncodeKey(key []byte) string {
 	return base32.StdEncoding.EncodeToString(key)
+}
+
+// DecodeKey converts a base32 key to a binary representation.
+func DecodeKey(skey string) ([]byte, error) {
+	return base32.StdEncoding.DecodeString(strings.ToUpper(skey))
 }
