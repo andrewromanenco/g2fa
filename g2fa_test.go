@@ -19,3 +19,10 @@ func TestGenerateKeyReturnsDifferentKeyOnEachCall(t *testing.T) {
 		t.Error("Key must be unique for every call")
 	}
 }
+
+func TestEncodeKeyReturnsBase32String(t *testing.T) {
+	key := []byte{0xe6, 0x71, 0xe0, 0x82, 0xc7, 0x11, 0xa4, 0xc5, 0x06, 0xd8}
+	if EncodeKey(key) != "4ZY6BAWHCGSMKBWY" {
+		t.Error("Key was not encoded correctly")
+	}
+}
