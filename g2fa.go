@@ -8,6 +8,7 @@ import (
 	"encoding/base32"
 	"encoding/binary"
 	"errors"
+	"fmt"
 	"io"
 	"strings"
 	"time"
@@ -46,6 +47,15 @@ func DecodeKey(skey string) ([]byte, error) {
 
 func timeVariable() int64 {
 	return time.Now().Unix() / defaultTimeWindowSize
+}
+
+// GetTimedAuthCode returns a temp password valid for a 30 seconds window.
+func GetTimedAuthCode(key []byte) (string, error) {
+	code, err := generateHMAC(key, timeVariable())
+	if err != nil {
+		return "", err
+	}
+	return fmt.Sprintf("%06d", decodeHMAC(code)), nil
 }
 
 // decodeHMAC extracts code from a HMAC according to RFC4226
