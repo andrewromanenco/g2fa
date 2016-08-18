@@ -7,18 +7,20 @@ import (
 	"crypto/sha1"
 	"encoding/base32"
 	"encoding/binary"
+	"errors"
 	"io"
 	"strings"
+	"time"
 )
 
 const (
-	// GoogleAuthenticator is a key size compatible with Goole's authenticator app.
-	GoogleAuthenticator = 10
+	googleAuthenticatorKeySize = 10
+	defaultTimeWindowSize      = 30
 )
 
 // GenerateKey generates random crypto key of requested length in bytes.
-func GenerateKey(size int) ([]byte, error) {
-	key := make([]byte, size)
+func GenerateKey() ([]byte, error) {
+	key := make([]byte, googleAuthenticatorKeySize)
 	if _, err := io.ReadFull(rand.Reader, key); err != nil {
 		return nil, err
 	}
@@ -32,7 +34,18 @@ func EncodeKey(key []byte) string {
 
 // DecodeKey converts a base32 key to a binary representation.
 func DecodeKey(skey string) ([]byte, error) {
-	return base32.StdEncoding.DecodeString(strings.ToUpper(skey))
+	key, err := base32.StdEncoding.DecodeString(strings.ToUpper(skey))
+	if err != nil {
+		return nil, err
+	}
+	if len(key) != googleAuthenticatorKeySize {
+		return nil, errors.New("Key is not 80 bits")
+	}
+	return key, err
+}
+
+func timeVariable() int64 {
+	return time.Now().Unix() / defaultTimeWindowSize
 }
 
 // decodeHMAC extracts code from a HMAC according to RFC4226

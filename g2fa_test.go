@@ -5,16 +5,9 @@ import (
 	"testing"
 )
 
-func TestGenerateKeyReturnsRequestedLength(t *testing.T) {
-	key, _ := GenerateKey(5)
-	if len(key) != 5 {
-		t.Error("Must return requested key size")
-	}
-}
-
 func TestGenerateKeyReturnsDifferentKeyOnEachCall(t *testing.T) {
-	key1, _ := GenerateKey(5)
-	key2, _ := GenerateKey(5)
+	key1, _ := GenerateKey()
+	key2, _ := GenerateKey()
 	if reflect.DeepEqual(key1, key2) {
 		t.Error("Key must be unique for every call")
 	}
@@ -42,6 +35,14 @@ func TestDecodeKeyIgnoresCase(t *testing.T) {
 	decoded, _ := DecodeKey(skey)
 	if !reflect.DeepEqual(key, decoded) {
 		t.Error("Key was not decoded correctly")
+	}
+}
+
+func TestEncodeKeyFailsOnWrongKeyLength(t *testing.T) {
+	skey := "GEZDG==="
+	_, err := DecodeKey(skey)
+	if err == nil {
+		t.Error("Must fail for key has wrong length")
 	}
 }
 
