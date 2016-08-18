@@ -1,3 +1,10 @@
+/*
+Package g2fa implements temporary time based password generation for Google
+Authenticator app. Works accordingly to RFC 4226 and
+https://en.wikipedia.org/wiki/Google_Authenticator
+
+See README for details.
+*/
 package g2fa
 
 import (
